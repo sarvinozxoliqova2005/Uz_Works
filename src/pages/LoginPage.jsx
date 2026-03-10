@@ -141,7 +141,7 @@ const LoginPage = () => {
         </div>
 
         <div className="flex-1 flex items-center justify-center">
-          <div className={`w-full max-w-[547px] max-[600px]:w-full max-[600px]:h-[490px]  border-2  rounded-md p-8 md:p-12 ${
+          <div className={`w-full max-w-[547px] max-[600px]:w-full max-[600px]:h-[500px]  border-2  rounded-md p-8 md:p-12 ${
             darkMode 
               ? 'border-gray-500 bg-black' 
               : 'border-gray-300 bg-white'
