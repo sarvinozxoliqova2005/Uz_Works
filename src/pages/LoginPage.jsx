@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Moon, Sun } from "lucide-react";
@@ -7,20 +7,20 @@ import { Moon, Sun } from "lucide-react";
 const translations = {
   Uzb: {
     title: "Hisobingizga kiring",
-    desc: "Kirish sahifasi foydalanuvchilarning xavfsizligini ustuvor hisoblab, tizimning keng imkoniyatlariga tez va qulay kirishni ta'minlaydi.",
+    desc: "Kirish sahifasi foydalanuvchilarning xavfsizligini ustuvor hisoblab, tizimga tez va qulay kirishni ta'minlaydi.",
     phoneLabel: "Telefon raqam",
     phonePlaceholder: "Telefon raqamingizni kiriting",
     passLabel: "Parol",
     passPlaceholder: "Parolingizni kiriting",
-    forgotPass: "Parol unutdingizmi ?",
+    forgotPass: "Parol unutdingizmi?",
     loginBtn: "Hisobga kirish",
     loading: "Kirilmoqda...",
-    noAccount: "Hisobingiz yo'qmi ?",
+    noAccount: "Hisobingiz yo'qmi?",
     signUp: "Ro'yxatdan o'tish",
   },
   Rus: {
     title: "Войдите в аккаунт",
-    desc: "Страница входа обеспечивает быстрый и удобный доступ к системе, уделяя приоритетное внимание безопасности.",
+    desc: "Страница входа обеспечивает быстрый и удобный доступ к системе.",
     phoneLabel: "Номер телефона",
     phonePlaceholder: "Введите номер телефона",
     passLabel: "Пароль",
@@ -33,11 +33,11 @@ const translations = {
   },
   Eng: {
     title: "Sign in to account",
-    desc: "The login page provides fast and convenient access to the system, prioritizing user security.",
+    desc: "Login page provides fast and secure access to the system.",
     phoneLabel: "Phone number",
-    phonePlaceholder: "Enter your phone number",
+    phonePlaceholder: "Enter phone number",
     passLabel: "Password",
-    passPlaceholder: "Enter your password",
+    passPlaceholder: "Enter password",
     forgotPass: "Forgot password?",
     loginBtn: "Sign In",
     loading: "Loading...",
@@ -51,14 +51,16 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLang, setSelectedLang] = useState("Uzb");
+
   const navigate = useNavigate();
 
   const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark",
+    localStorage.getItem("theme") === "dark"
   );
 
   useEffect(() => {
-    const root = window.document.documentElement;
+    const root = document.documentElement;
+
     if (darkMode) {
       root.classList.add("dark");
       localStorage.setItem("theme", "dark");
@@ -72,186 +74,186 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
-      return toast.error(
-        selectedLang === "Uzb"
-          ? "Ma'lumotlarni kiriting!"
-          : "Please fill in fields!",
-      );
+
+    if (!username || !password) {
+      return toast.error("Ma'lumotlarni kiriting!");
     }
+
     setIsLoading(true);
+
     try {
       const cleanPhone = username.replace(/\D/g, "");
-      const res = await axios.post(`https://api.uzworks.uz/api/auth/login`, {
-        userName: cleanPhone,
-        password: password,
-      });
-      if (res.status === 200 || res.status === 201) {
-        localStorage.setItem("token", res.data?.token);
-        toast.success("OK!");
+
+      const res = await axios.post(
+        "https://api.uzworks.uz/api/auth/login",
+        {
+          userName: cleanPhone,
+          password: password,
+        }
+      );
+
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+
+        toast.success("Login successful");
+
         navigate("/dashboard");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error!");
+      console.log(error);
+
+      toast.error(
+        error?.response?.data?.message || "Login error"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={`min-h-screen w-full flex flex-col lg:flex-row font-sans overflow-hidden ${
-      darkMode ? 'dark bg-black' : 'bg-white'
-    }`}>
-      {/* Left side - Form (full width on mobile, 48% on desktop) */}
-      <div className="w-full lg:w-[48%] flex flex-col p-4 sm:p-6 md:p-8 lg:p-12">
-        {/* Header with logo, language selector and theme toggle */}
-        <div className="flex items-center justify-between w-full mb-8 sm:mb-10 lg:mb-12">
+    <div
+      className={`min-h-screen w-full flex font-sans overflow-hidden ${
+        darkMode ? "bg-black text-white" : "bg-white"
+      }`}
+    >
+      {/* LEFT */}
+      <div className="w-full lg:w-[48%] flex flex-col p-6 md:p-12">
+        {/* HEADER */}
+        <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white rounded-sm flex items-center justify-center">
-                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"></div>
-              </div>
+            <div className="w-10 h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
             </div>
-            <span className="text-xl sm:text-2xl font-black text-[#3B82F6] uppercase">
-              UZ <span className={`${darkMode ? 'text-white' : 'text-black'}`}>WORKS</span>
+
+            <span className="text-2xl font-black text-[#3B82F6] uppercase">
+              UZ{" "}
+              <span className={darkMode ? "text-white" : "text-black"}>
+                WORKS
+              </span>
             </span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
-            {/* Language Selector */}
+          {/* LANGUAGE + DARK */}
+          <div className="flex items-center gap-6">
             <select
               value={selectedLang}
               onChange={(e) => setSelectedLang(e.target.value)}
-              className={`text-xs sm:text-sm font-medium cursor-pointer outline-none bg-transparent ${
-                darkMode ? 'text-gray-300' : 'text-gray-500'
-              }`}
+              className="text-sm bg-transparent outline-none"
             >
               <option value="Uzb">🇺🇿 Uzb</option>
               <option value="Rus">🇷🇺 Рус</option>
               <option value="Eng">🇬🇧 Eng</option>
             </select>
 
-            {/* Dark Mode Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
             >
               {darkMode ? (
-                <Moon size={18} className="sm:w-6 sm:h-6 text-white cursor-pointer" />
+                <Moon size={22} />
               ) : (
-                <Sun size={18} className="sm:w-6 sm:h-6 text-orange-400 cursor-pointer" />
+                <Sun size={22} className="text-orange-400" />
               )}
             </button>
           </div>
         </div>
 
-        {/* Form Container - centered */}
+        {/* LOGIN CARD */}
         <div className="flex-1 flex items-center justify-center">
-          <div className={`w-full max-w-[90%] sm:max-w-[500px] lg:max-w-[547px] border rounded-lg sm:rounded-xl lg:rounded-md p-6 sm:p-8 lg:p-12 ${
-            darkMode 
-              ? 'border-gray-500 bg-black' 
-              : 'border-gray-300 bg-white'
-          }`}>
-            {/* Title and Description */}
-            <div className="text-center mb-6 sm:mb-8 lg:mb-10">
-              <h1 className={`text-2xl sm:text-3xl lg:text-3xl font-bold mb-2 sm:mb-3 ${
-                darkMode ? 'text-white' : 'text-[#09041C]'
-              }`}>
-                {t.title}
-              </h1>
-              <p className={`text-xs sm:text-sm lg:text-[15px] leading-relaxed px-0 sm:px-2 ${
-                darkMode ? 'text-gray-400' : 'text-gray-400'
-              }`}>
-                {t.desc}
-              </p>
+          <div
+            className={`w-full max-w-[540px] border rounded-md p-10 ${
+              darkMode
+                ? "border-gray-600 bg-black"
+                : "border-gray-300 bg-white"
+            }`}
+          >
+            <div className="text-center mb-10">
+              <h1 className="text-3xl font-bold mb-3">{t.title}</h1>
+              <p className="text-gray-400 text-[15px]">{t.desc}</p>
             </div>
 
-            {/* Login Form */}
-            <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5 lg:space-y-6">
-              {/* Phone Number Field */}
-              <div className="space-y-1 sm:space-y-2">
-                <label className={`text-[10px] sm:text-xs lg:text-[12px] font-bold uppercase ml-1 ${
-                  darkMode ? 'text-gray-400' : 'text-gray-500'
-                }`}>
+            <form onSubmit={handleLogin} className="space-y-6">
+              {/* PHONE */}
+              <div>
+                <label className="text-xs uppercase text-gray-400">
                   {t.phoneLabel}
                 </label>
+
                 <input
                   value={username}
                   onChange={(e) => setUserName(e.target.value)}
-                  className={`w-full h-10 sm:h-12 lg:h-14 rounded-lg cursor-pointer px-3 sm:px-4 lg:px-5 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
-                    darkMode 
-                      ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400' 
-                      : 'border border-gray-200'
-                  }`}
                   type="tel"
                   placeholder={t.phonePlaceholder}
+                  className={`w-full h-14 mt-2 px-5 rounded-lg outline-none ${
+                    darkMode
+                      ? "bg-gray-700 border border-gray-600"
+                      : "border border-gray-200"
+                  }`}
                 />
               </div>
 
-              {/* Password Field */}
-              <div className="space-y-1 sm:space-y-2">
-                <div className="flex justify-between items-center px-1">
-                  <label className={`text-[10px] sm:text-xs lg:text-[12px] font-bold uppercase ${
-                    darkMode ? 'text-gray-400' : 'text-gray-500'
-                  }`}>
+              {/* PASSWORD */}
+              <div>
+                <div className="flex justify-between text-xs mb-2">
+                  <label className="uppercase text-gray-400">
                     {t.passLabel}
                   </label>
+
                   <Link
                     to="/reset"
-                    className="text-[10px] sm:text-xs lg:text-[11px] font-bold text-[#3B82F6] hover:underline"
+                    className="text-blue-500 font-bold"
                   >
                     {t.forgotPass}
                   </Link>
                 </div>
+
                 <input
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-10 sm:h-12 lg:h-14 rounded-md cursor-pointer px-3 sm:px-4 lg:px-5 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
-                    darkMode 
-                      ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400' 
-                      : 'border border-gray-200'
-                  }`}
                   type="password"
                   placeholder={t.passPlaceholder}
+                  className={`w-full h-14 px-5 rounded-lg outline-none ${
+                    darkMode
+                      ? "bg-gray-700 border border-gray-600"
+                      : "border border-gray-200"
+                  }`}
                 />
               </div>
 
-              {/* Submit Button */}
+              {/* BUTTON */}
               <button
                 type="submit"
-                className="w-full h-10 sm:h-12 lg:h-14 bg-[#3B82F6] cursor-pointer text-white font-bold rounded-lg shadow-lg shadow-blue-100 dark:shadow-none hover:bg-[#1a00b3] transition-all text-sm sm:text-base"
+                disabled={isLoading}
+                className="w-full h-14 bg-[#3B82F6] text-white font-bold rounded-lg hover:bg-blue-700 transition"
               >
                 {isLoading ? t.loading : t.loginBtn}
               </button>
 
-              {/* Sign Up Link */}
-              <div className="text-center mt-4 sm:mt-5 lg:mt-6">
-                <p className={`text-xs sm:text-sm lg:text-[13px] ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>
-                  {t.noAccount}{" "}
-                  <Link
-                    to="/signup"
-                    className="text-[#3B82F6] font-bold hover:underline"
-                  >
-                    {t.signUp}
-                  </Link>
-                </p>
+              {/* SIGNUP */}
+              <div className="text-center text-sm text-gray-400">
+                {t.noAccount}
+                <Link
+                  to="/signup"
+                  className="text-blue-500 font-bold ml-2"
+                >
+                  {t.signUp}
+                </Link>
               </div>
             </form>
           </div>
         </div>
       </div>
 
-      {/* Right side - Illustration (hidden on mobile, shown on desktop) */}
-      <div className={`hidden lg:flex flex-1 items-center justify-center ${
-        darkMode ? 'bg-black' : 'bg-[#F9FBFF]'
-      }`}>
+      {/* RIGHT ILLUSTRATION */}
+      <div
+        className={`hidden lg:flex flex-1 items-center justify-center ${
+          darkMode ? "bg-black" : "bg-[#F9FBFF]"
+        }`}
+      >
         <img
-          src="hero.png"
+          src="/hero.png"
           alt="Illustration"
-          className="w-[70%] md:w-[80%] drop-shadow-2xl"
-          onError={(e) => {
-            e.target.src = "https://placehold.co/600x400/f5f5f5/cccccc?text=Illustration";
-          }}
+          className="w-[80%] drop-shadow-2xl"
         />
       </div>
     </div>
