@@ -99,27 +99,30 @@ const LoginPage = () => {
   };
 
   return (
-    <div className={`min-h-screen w-full flex font-sans overflow-hidden ${
+    <div className={`min-h-screen w-full flex flex-col lg:flex-row font-sans overflow-hidden ${
       darkMode ? 'dark bg-black' : 'bg-white'
     }`}>
-      <div className="w-full lg:w-[48%] flex flex-col p-6 md:p-12">
-        <div className="flex items-center justify-between w-full mb-12">
+      {/* Left side - Form (full width on mobile, 48% on desktop) */}
+      <div className="w-full lg:w-[48%] flex flex-col p-4 sm:p-6 md:p-8 lg:p-12">
+        {/* Header with logo, language selector and theme toggle */}
+        <div className="flex items-center justify-between w-full mb-8 sm:mb-10 lg:mb-12">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-white rounded-sm flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white rounded-sm flex items-center justify-center">
+                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-2xl font-black text-[#3B82F6] uppercase">
+            <span className="text-xl sm:text-2xl font-black text-[#3B82F6] uppercase">
               UZ <span className={`${darkMode ? 'text-white' : 'text-black'}`}>WORKS</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
+            {/* Language Selector */}
             <select
               value={selectedLang}
               onChange={(e) => setSelectedLang(e.target.value)}
-              className={`text-sm font-medium cursor-pointer outline-none bg-transparent ${
+              className={`text-xs sm:text-sm font-medium cursor-pointer outline-none bg-transparent ${
                 darkMode ? 'text-gray-300' : 'text-gray-500'
               }`}
             >
@@ -127,40 +130,47 @@ const LoginPage = () => {
               <option value="Rus">🇷🇺 Рус</option>
               <option value="Eng">🇬🇧 Eng</option>
             </select>
+
+            {/* Dark Mode Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="outline-none p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               {darkMode ? (
-                <Moon size={24} className="text-white cursor-pointer" />
+                <Moon size={18} className="sm:w-6 sm:h-6 text-white cursor-pointer" />
               ) : (
-                <Sun size={24} className="text-orange-400 cursor-pointer" />
+                <Sun size={18} className="sm:w-6 sm:h-6 text-orange-400 cursor-pointer" />
               )}
             </button>
           </div>
         </div>
 
+        {/* Form Container - centered */}
         <div className="flex-1 flex items-center justify-center">
-          <div className={`w-full max-w-[547px] border-2  rounded-md p-8 md:p-12 ${
+          <div className={`w-full max-w-[90%] sm:max-w-[500px] lg:max-w-[547px] border rounded-lg sm:rounded-xl lg:rounded-md p-6 sm:p-8 lg:p-12 ${
             darkMode 
               ? 'border-gray-500 bg-black' 
               : 'border-gray-300 bg-white'
           }`}>
-            <div className="text-center mb-10">
-              <h1 className={`text-3xl font-bold mb-3 ${
+            {/* Title and Description */}
+            <div className="text-center mb-6 sm:mb-8 lg:mb-10">
+              <h1 className={`text-2xl sm:text-3xl lg:text-3xl font-bold mb-2 sm:mb-3 ${
                 darkMode ? 'text-white' : 'text-[#09041C]'
               }`}>
                 {t.title}
               </h1>
-              <p className={`text-[15px] leading-relaxed px-2 ${
+              <p className={`text-xs sm:text-sm lg:text-[15px] leading-relaxed px-0 sm:px-2 ${
                 darkMode ? 'text-gray-400' : 'text-gray-400'
               }`}>
                 {t.desc}
               </p>
             </div>
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-2">
-                <label className={`text-[12px] font-bold uppercase ml-1 ${
+
+            {/* Login Form */}
+            <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5 lg:space-y-6">
+              {/* Phone Number Field */}
+              <div className="space-y-1 sm:space-y-2">
+                <label className={`text-[10px] sm:text-xs lg:text-[12px] font-bold uppercase ml-1 ${
                   darkMode ? 'text-gray-400' : 'text-gray-500'
                 }`}>
                   {t.phoneLabel}
@@ -168,7 +178,7 @@ const LoginPage = () => {
                 <input
                   value={username}
                   onChange={(e) => setUserName(e.target.value)}
-                  className={`w-full h-14 rounded-lg cursor-pointer px-5 outline-none focus:border-[#2100E0] transition-all ${
+                  className={`w-full h-10 sm:h-12 lg:h-14 rounded-lg cursor-pointer px-3 sm:px-4 lg:px-5 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
                     darkMode 
                       ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400' 
                       : 'border border-gray-200'
@@ -178,16 +188,17 @@ const LoginPage = () => {
                 />
               </div>
 
-              <div className="space-y-2">
+              {/* Password Field */}
+              <div className="space-y-1 sm:space-y-2">
                 <div className="flex justify-between items-center px-1">
-                  <label className={`text-[12px] font-bold uppercase ${
+                  <label className={`text-[10px] sm:text-xs lg:text-[12px] font-bold uppercase ${
                     darkMode ? 'text-gray-400' : 'text-gray-500'
                   }`}>
                     {t.passLabel}
                   </label>
                   <Link
                     to="/reset"
-                    className="text-[11px] font-bold text-[#3B82F6] hover:underline"
+                    className="text-[10px] sm:text-xs lg:text-[11px] font-bold text-[#3B82F6] hover:underline"
                   >
                     {t.forgotPass}
                   </Link>
@@ -195,7 +206,7 @@ const LoginPage = () => {
                 <input
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-14 rounded-md cursor-pointer px-5 outline-none focus:border-[#2100E0] transition-all ${
+                  className={`w-full h-10 sm:h-12 lg:h-14 rounded-md cursor-pointer px-3 sm:px-4 lg:px-5 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
                     darkMode 
                       ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400' 
                       : 'border border-gray-200'
@@ -204,14 +215,18 @@ const LoginPage = () => {
                   placeholder={t.passPlaceholder}
                 />
               </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full h-14 bg-[#3B82F6] cursor-pointer text-white font-bold rounded-lg shadow-lg shadow-blue-100 dark:shadow-none hover:bg-[#1a00b3] transition-all"
+                className="w-full h-10 sm:h-12 lg:h-14 bg-[#3B82F6] cursor-pointer text-white font-bold rounded-lg shadow-lg shadow-blue-100 dark:shadow-none hover:bg-[#1a00b3] transition-all text-sm sm:text-base"
               >
                 {isLoading ? t.loading : t.loginBtn}
               </button>
-              <div className="text-center mt-6">
-                <p className={`text-[13px] ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>
+
+              {/* Sign Up Link */}
+              <div className="text-center mt-4 sm:mt-5 lg:mt-6">
+                <p className={`text-xs sm:text-sm lg:text-[13px] ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>
                   {t.noAccount}{" "}
                   <Link
                     to="/signup"
@@ -225,13 +240,18 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Right side - Illustration (hidden on mobile, shown on desktop) */}
       <div className={`hidden lg:flex flex-1 items-center justify-center ${
         darkMode ? 'bg-black' : 'bg-[#F9FBFF]'
       }`}>
         <img
           src="hero.png"
           alt="Illustration"
-          className="w-[80%] drop-shadow-2xl"
+          className="w-[70%] md:w-[80%] drop-shadow-2xl"
+          onError={(e) => {
+            e.target.src = "https://placehold.co/600x400/f5f5f5/cccccc?text=Illustration";
+          }}
         />
       </div>
     </div>
