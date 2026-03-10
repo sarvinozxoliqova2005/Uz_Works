@@ -100,7 +100,7 @@ const LoginPage = () => {
 
   return (
     <div className={`min-h-screen w-full flex font-sans overflow-hidden ${
-      darkMode ? 'dark bg-black' : 'bg-white'
+      darkMode ? 'dark bg-black duration-500' : 'bg-white duration-500'
     }`}>
       <div className="w-full lg:w-[48%] flex flex-col p-6 md:p-12">
         <div className="flex items-center justify-between w-full mb-12">
@@ -110,8 +110,8 @@ const LoginPage = () => {
                 <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-2xl font-black text-[#3B82F6] uppercase">
-              UZ <span className={`${darkMode ? 'text-white' : 'text-black'}`}>WORKS</span>
+            <span className="text-2xl font-black text-[#3B82F6] uppercase ">
+              UZ <span className={`${darkMode ? 'text-white ' : 'text-black '}`}>WORKS</span>
             </span>
           </div>
 
@@ -161,7 +161,7 @@ const LoginPage = () => {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <label className={`text-[12px] max-[600px]:text-[10px] font-bold uppercase ml-1 ${
-                  darkMode ? 'text-gray-400' : 'text-gray-500'
+                  darkMode ? 'text-gray-400 duration-500' : 'text-gray-500 duration-500'
                 }`}>
                   {t.phoneLabel}
                 </label>
@@ -170,8 +170,8 @@ const LoginPage = () => {
                   onChange={(e) => setUserName(e.target.value)}
                   className={`w-full max-[600px]:h-12 h-14 rounded-lg cursor-pointer px-5 outline-none focus:border-[#2100E0] transition-all ${
                     darkMode 
-                      ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400' 
-                      : 'border border-gray-200'
+                      ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400 duration-500' 
+                      : 'border border-gray-200 duration-500'
                   }`}
                   type="tel"
                   placeholder={t.phonePlaceholder}
@@ -181,7 +181,7 @@ const LoginPage = () => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center px-1">
                   <label className={`text-[12px] max-[600px]:text-[10px] font-bold uppercase ${
-                    darkMode ? 'text-gray-400' : 'text-gray-500'
+                    darkMode ? 'text-gray-400 duration-500' : 'text-gray-500 duration-500'
                   }`}>
                     {t.passLabel}
                   </label>
@@ -211,7 +211,7 @@ const LoginPage = () => {
                 {isLoading ? t.loading : t.loginBtn}
               </button>
               <div className="text-center mt-6">
-                <p className={`text-[13px] ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>
+                <p className={`text-[13px] ${darkMode ? 'text-gray-400 duration-500' : 'text-gray-400 duration-500'}`}>
                   {t.noAccount}{" "}
                   <Link
                     to="/signup"
@@ -226,7 +226,7 @@ const LoginPage = () => {
         </div>
       </div>
       <div className={`hidden lg:flex flex-1 items-center justify-center ${
-        darkMode ? 'bg-black' : 'bg-[#F9FBFF]'
+        darkMode ? 'bg-black duration-500' : 'bg-[#F9FBFF] duration-500'
       }`}>
         <img
           src="hero.png"
