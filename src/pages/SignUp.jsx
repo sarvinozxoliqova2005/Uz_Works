@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Moon, Sun } from "lucide-react";
 
-// 1. Obyektni komponentdan tashqariga chiqaramiz (xatolikni oldini olish uchun)
 const translations = {
   Uzb: {
     title: "Hisob yaratish",
@@ -127,127 +126,171 @@ const SignUp = () => {
 
   return (
     <div className={`min-h-screen w-full flex flex-col lg:flex-row font-sans transition-colors duration-500 ${darkMode ? "dark bg-black" : "bg-white"}`}>
-      <div className="w-full lg:w-[48%] flex flex-col p-6 md:p-12">
-        <div className="flex items-center justify-between w-full mb-12">
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 flex flex-col p-4 sm:p-6 md:p-8 lg:p-12">
+        {/* Header */}
+        <div className="flex items-center justify-between w-full mb-6 sm:mb-8 md:mb-10 lg:mb-12">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-white rounded-sm flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white rounded-sm flex items-center justify-center">
+                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-2xl font-black text-[#3B82F6] uppercase">
+            <span className="text-xl sm:text-2xl font-black text-[#3B82F6] uppercase">
               UZ <span className={darkMode ? 'text-white' : 'text-black'}>WORKS</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
             <select
               value={selectedLang}
               onChange={handleLangChange}
-              className={`text-sm font-medium cursor-pointer outline-none bg-transparent ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}
+              className={`text-xs sm:text-sm font-medium cursor-pointer outline-none bg-transparent ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}
             >
               <option value="Uzb">🇺🇿 Uzb</option>
               <option value="Rus">🇷🇺 Рус</option>
               <option value="Eng">🇬🇧 Eng</option>
             </select>
-            <button onClick={() => setDarkMode(!darkMode)} className="outline-none p-2 cursor-pointer rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              {darkMode ? <Moon size={24} className="text-white" /> : <Sun size={24} className="text-orange-400" />}
+            <button onClick={() => setDarkMode(!darkMode)} className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              {darkMode ? <Moon size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" /> : <Sun size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400" />}
             </button>
           </div>
         </div>
 
-        <div className="flex-1 flex items-center justify-center py-4">
-          <div className={`w-full max-w-[547px] border-2 rounded-xl p-8 md:p-10 transition-all duration-500 ${darkMode ? 'border-gray-800 bg-[#0A0A0A]' : 'border-gray-100 bg-white shadow-sm'}`}>
-            <div className="text-center mb-8">
-              <h1 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-[#09041C]'}`}>{t.title}</h1>
-              <p className="text-gray-400 text-sm">{t.subtitle}</p>
+        {/* Form Container */}
+        <div className="flex-1 flex items-center justify-center py-4 sm:py-6 md:py-8">
+          <div className={`w-full max-w-md lg:max-w-[500px] border rounded-xl p-5 sm:p-6 md:p-8 lg:p-10 transition-all duration-500 ${
+            darkMode ? 'border-gray-800 bg-[#0A0A0A]' : 'border-gray-100 bg-white shadow-sm'
+          }`}>
+            {/* Title */}
+            <div className="text-center mb-5 sm:mb-6 md:mb-8">
+              <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2 ${darkMode ? 'text-white' : 'text-[#09041C]'}`}>
+                {t.title}
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-400 px-2">{t.subtitle}</p>
             </div>
 
-            <form onSubmit={handleSignUp} className="space-y-4">
+            {/* Form */}
+            <form onSubmit={handleSignUp} className="space-y-3 sm:space-y-4">
+              {/* Name */}
               <div className="space-y-1">
-                <label className="text-[12px] font-bold text-gray-500 uppercase ml-1">{t.nameLabel}</label>
+                <label className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase ml-1">{t.nameLabel}</label>
                 <input
                   required
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder={t.namePlaceholder}
-                  className={`w-full h-12 rounded-lg border px-4 outline-none focus:border-[#2100E0] transition-all ${darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"}`}
+                  className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
+                    darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                  }`}
                 />
               </div>
 
+              {/* Phone */}
               <div className="space-y-1">
-                <label className="text-[12px] font-bold text-gray-500 uppercase ml-1">{t.phoneLabel}</label>
+                <label className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase ml-1">{t.phoneLabel}</label>
                 <input
                   required
                   type="tel"
                   value={number}
-                  onChange={(e) => setNumber(e.target.value)}
+                  onChange={(e) => setNumber(e.target.value.replace(/\D/g, ""))}
                   placeholder={t.phonePlaceholder}
-                  className={`w-full h-12 rounded-lg border px-4 outline-none focus:border-[#2100E0] transition-all ${darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"}`}
+                  maxLength={12}
+                  className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
+                    darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                  }`}
                 />
               </div>
 
-              <div className="gap-4">
+              {/* Password fields - grid on tablet and up */}
+              <div className=" gap-3 sm:gap-4">
                 <div className="space-y-1">
-                  <label className="text-[12px] font-bold text-gray-500 uppercase ml-1">{t.passLabel}</label>
+                  <label className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase ml-1">{t.passLabel}</label>
                   <input
                     required
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t.passPlaceholder}
-                    className={`w-full h-12 rounded-lg border px-4 outline-none focus:border-[#2100E0] transition-all ${darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"}`}
+                    className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
+                      darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                    }`}
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[12px] font-bold text-gray-500 uppercase ml-1">{t.confirmPassLabel}</label>
+                  <label className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase ml-1">{t.confirmPassLabel}</label>
                   <input
                     required
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder={t.confirmPassPlaceholder}
-                    className={`w-full h-12 rounded-lg border px-4 outline-none focus:border-[#2100E0] transition-all ${darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"}`}
+                    className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
+                      darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                    }`}
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-2">
+              {/* Role Buttons */}
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-1 sm:pt-2">
                 <button
                   type="button"
                   onClick={() => setRole("worker")}
-                  className={`h-12 rounded-lg font-bold transition-all cursor-pointer ${role === "worker" ? "bg-[#2100E0] text-white shadow-md shadow-blue-500/20" : "bg-gray-100 text-gray-500 dark:bg-gray-800"}`}
+                  className={`h-10 sm:h-11 md:h-12 rounded-lg font-bold transition-all cursor-pointer text-sm sm:text-base ${
+                    role === "worker" 
+                      ? "bg-[#2100E0] text-white shadow-md shadow-blue-500/20" 
+                      : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                  }`}
                 >
                   {t.workerRole}
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole("employer")}
-                  className={`h-12 rounded-lg cursor-pointer font-bold transition-all ${role === "employer" ? "bg-[#2100E0] text-white shadow-md shadow-blue-500/20" : "bg-gray-100 text-gray-500 dark:bg-gray-800"}`}
+                  className={`h-10 sm:h-11 md:h-12 rounded-lg cursor-pointer font-bold transition-all text-sm sm:text-base ${
+                    role === "employer" 
+                      ? "bg-[#2100E0] text-white shadow-md shadow-blue-500/20" 
+                      : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                  }`}
                 >
                   {t.employerRole}
                 </button>
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-14  text-white font-bold rounded-lg shadow-lg cursor-pointer bg-[#2100E0] transition-all mt-2 active:scale-95"
+                className="w-full h-11 sm:h-12 md:h-14 text-white font-bold rounded-lg shadow-lg cursor-pointer bg-[#2100E0] transition-all mt-2 active:scale-95 text-sm sm:text-base"
               >
                 {isLoading ? t.loading : t.submitBtn}
               </button>
 
-              <div className="text-center mt-4">
-                <p className="text-[13px] text-gray-400">
-                  {t.hasAccount} <Link to="/login" className="text-[#3B82F6] font-bold hover:underline">{t.loginLink}</Link>
+              {/* Login Link */}
+              <div className="text-center mt-3 sm:mt-4">
+                <p className="text-xs sm:text-sm text-gray-400">
+                  {t.hasAccount}{" "}
+                  <Link to="/login" className="text-[#3B82F6] font-bold hover:underline">
+                    {t.loginLink}
+                  </Link>
                 </p>
               </div>
             </form>
           </div>
         </div>
       </div>
+
+      {/* Right Side - Illustration */}
       <div className={`hidden lg:flex flex-1 items-center justify-center transition-colors duration-500 ${darkMode ? "bg-black" : "bg-[#F9FBFF]"}`}>
-        <img src="/hero.png" alt="Hero" className="w-[80%] drop-shadow-2xl" />
+        <img 
+          src="/hero.png" 
+          alt="Hero" 
+          className="w-[70%] md:w-[80%] drop-shadow-2xl"
+          onError={(e) => {
+            e.target.src = "https://placehold.co/600x400/130160/white?text=Sign+Up";
+          }}
+        />
       </div>
     </div>
   );
