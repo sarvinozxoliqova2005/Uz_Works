@@ -53,9 +53,35 @@ const LoginPage = () => {
   const [selectedLang, setSelectedLang] = useState("Uzb");
   const navigate = useNavigate();
 
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark",
-  );
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) return savedTheme === "dark";
+    const now = new Date();
+    const hours = now.getHours();
+    return hours < 8 || hours >= 20;
+  });
+
+  // Avtomatik dark mode o'zgarishini kuzatish
+  useEffect(() => {
+    const checkTimeAndSetTheme = () => {
+      const now = new Date();
+      const hours = now.getHours();
+      const shouldBeDark = hours < 8 || hours >= 20;
+      setDarkMode(shouldBeDark);
+      const root = window.document.documentElement;
+      if (shouldBeDark) {
+        root.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        root.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+    };
+    
+    checkTimeAndSetTheme();
+    const interval = setInterval(checkTimeAndSetTheme, 30 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -67,6 +93,19 @@ const LoginPage = () => {
       localStorage.setItem("theme", "light");
     }
   }, [darkMode]);
+
+  const getTimeModeMessage = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    if (hours >= 8 && hours < 20) {
+      return "☀️ Kunduzgi rejim (8:00 - 20:00)";
+    }
+    return "🌙 Tungi rejim (20:00 - 8:00)";
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   const t = translations[selectedLang];
 
@@ -99,95 +138,98 @@ const LoginPage = () => {
   };
 
   return (
-    <div className={`min-h-screen w-full flex font-sans overflow-hidden ${
-      darkMode ? 'dark bg-black duration-500' : 'bg-white duration-500'
-    }`}>
-      <div className="w-full lg:w-[48%] flex flex-col p-6 md:p-12">
-        <div className="flex items-center justify-between w-full mb-12">
+    <div className={`min-h-screen w-full flex flex-col lg:flex-row font-sans transition-colors duration-500 ${darkMode ? "dark bg-black" : "bg-white"}`}>
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-[48%] flex flex-col p-4 sm:p-6 md:p-8 lg:p-12">
+        {/* Header */}
+        <div className="flex items-center justify-between w-full mb-6 sm:mb-8 md:mb-10 lg:mb-12">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-white rounded-sm flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#2100E0] rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white rounded-sm flex items-center justify-center">
+                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-2xl font-black text-[#3B82F6] uppercase ">
-              UZ <span className={`${darkMode ? 'text-white ' : 'text-black '}`}>WORKS</span>
+            <span className="text-xl sm:text-2xl font-black text-[#3B82F6] uppercase">
+              UZ <span className={darkMode ? 'text-white' : 'text-black'}>WORKS</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
+            {/* Time indicator */}
+            <span className={`text-[10px] sm:text-xs whitespace-nowrap ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              {getTimeModeMessage()}
+            </span>
+            
             <select
               value={selectedLang}
               onChange={(e) => setSelectedLang(e.target.value)}
-              className={`text-sm font-medium cursor-pointer outline-none bg-transparent ${
-                darkMode ? 'text-gray-300' : 'text-gray-500'
-              }`}
+              className={`text-xs sm:text-sm font-medium cursor-pointer outline-none bg-transparent ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}
             >
               <option value="Uzb">🇺🇿 Uzb</option>
               <option value="Rus">🇷🇺 Рус</option>
               <option value="Eng">🇬🇧 Eng</option>
             </select>
+            
             <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="outline-none p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              onClick={toggleDarkMode}
+              className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               {darkMode ? (
-                <Moon size={24} className="text-white cursor-pointer" />
+                <Moon size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-yellow-400 cursor-pointer" />
               ) : (
-                <Sun size={24} className="text-orange-400 cursor-pointer" />
+                <Sun size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400 cursor-pointer" />
               )}
             </button>
           </div>
         </div>
 
-        <div className="flex-1 flex items-center justify-center">
-          <div className={`w-full max-w-[547px] max-[600px]:w-full max-[600px]:h-[500px]  border-2  rounded-md p-8 md:p-12 ${
+        {/* Form Container */}
+        <div className="flex-1 flex items-center justify-center py-4 sm:py-6 md:py-8">
+          <div className={`w-full max-w-[547px] border-2 rounded-lg sm:rounded-md p-5 sm:p-6 md:p-8 lg:p-10 transition-all duration-500 ${
             darkMode 
-              ? 'border-gray-500 bg-black' 
-              : 'border-gray-300 bg-white'
+              ? 'border-gray-700 bg-black' 
+              : 'border-gray-200 bg-white'
           }`}>
-            <div className="text-center mb-10">
-              <h1 className={`text-3xl max-[600px]:text-2xl font-bold mb-3 ${
-                darkMode ? 'text-white' : 'text-[#09041C]'
-              }`}>
+            {/* Title */}
+            <div className="text-center mb-6 sm:mb-8 md:mb-10">
+              <h1 className={`text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 ${darkMode ? 'text-white' : 'text-[#09041C]'}`}>
                 {t.title}
               </h1>
-              <p className={`text-[15px] max-[600px]:text-[12px] leading-relaxed px-2 ${
-                darkMode ? 'text-gray-400' : 'text-gray-400'
-              }`}>
+              <p className={`text-xs sm:text-sm leading-relaxed px-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 {t.desc}
               </p>
             </div>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <label className={`text-[12px] max-[600px]:text-[10px] font-bold uppercase ml-1 ${
-                  darkMode ? 'text-gray-400 duration-500' : 'text-gray-500 duration-500'
-                }`}>
+
+            {/* Form */}
+            <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
+              {/* Phone Number */}
+              <div className="space-y-1 sm:space-y-2">
+                <label className={`text-[10px] sm:text-xs font-bold uppercase ml-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   {t.phoneLabel}
                 </label>
                 <input
                   value={username}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className={`w-full max-[600px]:h-12 h-14 rounded-lg cursor-pointer px-5 outline-none focus:border-[#2100E0] transition-all ${
+                  onChange={(e) => setUserName(e.target.value.replace(/\D/g, ""))}
+                  placeholder={t.phonePlaceholder}
+                  maxLength={12}
+                  className={`w-full h-10 sm:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
                     darkMode 
-                      ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400 duration-500' 
-                      : 'border border-gray-200 duration-500'
+                      ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' 
+                      : 'border-gray-200'
                   }`}
                   type="tel"
-                  placeholder={t.phonePlaceholder}
                 />
               </div>
 
-              <div className="space-y-2">
+              {/* Password */}
+              <div className="space-y-1 sm:space-y-2">
                 <div className="flex justify-between items-center px-1">
-                  <label className={`text-[12px] max-[600px]:text-[10px] font-bold uppercase ${
-                    darkMode ? 'text-gray-400 duration-500' : 'text-gray-500 duration-500'
-                  }`}>
+                  <label className={`text-[10px] sm:text-xs font-bold uppercase ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                     {t.passLabel}
                   </label>
                   <Link
                     to="/reset"
-                    className="text-[11px] font-bold text-[#3B82F6] hover:underline"
+                    className="text-[10px] sm:text-xs font-medium text-[#3B82F6] hover:underline"
                   >
                     {t.forgotPass}
                   </Link>
@@ -195,28 +237,30 @@ const LoginPage = () => {
                 <input
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-14 max-[600px]:h-12 rounded-md cursor-pointer px-5 outline-none focus:border-[#2100E0] transition-all ${
+                  placeholder={t.passPlaceholder}
+                  className={`w-full h-10 sm:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
                     darkMode 
-                      ? 'bg-gray-700 border border-gray-600 text-white placeholder-gray-400' 
-                      : 'border border-gray-200'
+                      ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' 
+                      : 'border-gray-200'
                   }`}
                   type="password"
-                  placeholder={t.passPlaceholder}
                 />
               </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full h-14 max-[600px]:h-12 bg-[#3B82F6] mt-2 cursor-pointer text-white font-bold rounded-lg shadow-lg shadow-blue-100 dark:shadow-none hover:bg-[#1a00b3] transition-all"
+                disabled={isLoading}
+                className="w-full h-10 sm:h-12 bg-[#3B82F6] mt-2 text-white font-semibold rounded-lg hover:bg-[#2563eb] transition-all disabled:opacity-50 text-sm sm:text-base"
               >
                 {isLoading ? t.loading : t.loginBtn}
               </button>
-              <div className="text-center mt-6">
-                <p className={`text-[13px] ${darkMode ? 'text-gray-400 duration-500' : 'text-gray-400 duration-500'}`}>
+
+              {/* Sign Up Link */}
+              <div className="text-center mt-4 sm:mt-6">
+                <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   {t.noAccount}{" "}
-                  <Link
-                    to="/signup"
-                    className="text-[#3B82F6] font-bold hover:underline"
-                  >
+                  <Link to="/signup" className="text-[#3B82F6] font-medium hover:underline">
                     {t.signUp}
                   </Link>
                 </p>
@@ -225,13 +269,16 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-      <div className={`hidden lg:flex flex-1 items-center justify-center ${
-        darkMode ? 'bg-black duration-500' : 'bg-[#F9FBFF] duration-500'
-      }`}>
+
+      {/* Right Side - Illustration */}
+      <div className={`hidden lg:flex flex-1 items-center justify-center transition-colors duration-500 ${darkMode ? "bg-black" : "bg-[#F9FBFF]"}`}>
         <img
-          src="hero.png"
+          src="/hero.png"
           alt="Illustration"
-          className="w-[80%] drop-shadow-2xl"
+          className="w-[70%] md:w-[80%] drop-shadow-2xl"
+          onError={(e) => {
+            e.target.src = "https://placehold.co/600x400/130160/white?text=Login";
+          }}
         />
       </div>
     </div>
