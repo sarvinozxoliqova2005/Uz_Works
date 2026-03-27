@@ -69,11 +69,48 @@ const SignUp = () => {
   const [role, setRole] = useState("worker");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLang, setSelectedLang] = useState(localStorage.getItem("lang") || "Uzb");
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) return savedTheme === "dark";
+    
+    // Avtomatik: soat 8:00 dan 20:00 gacha light, qolgan vaqt dark
+    const now = new Date();
+    const hours = now.getHours();
+    return hours < 8 || hours >= 20;
+  });
 
   const navigate = useNavigate();
   const t = translations[selectedLang];
 
+  // Avtomatik dark mode o'zgarishini kuzatish
+  useEffect(() => {
+    const checkTimeAndSetTheme = () => {
+      const now = new Date();
+      const hours = now.getHours();
+      // 8:00 dan 20:00 gacha Light mode, aks holda Dark mode
+      const shouldBeDark = hours < 8 || hours >= 20;
+      
+      setDarkMode(shouldBeDark);
+      const root = window.document.documentElement;
+      if (shouldBeDark) {
+        root.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        root.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+    };
+    
+    // Birinchi marta tekshirish
+    checkTimeAndSetTheme();
+    
+    // Har 30 daqiqada tekshirish (agar sayt uzoq ochiq tursa)
+    const interval = setInterval(checkTimeAndSetTheme, 30 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Dark mode o'zgarganda (manual toggle) localStorage va classni yangilash
   useEffect(() => {
     const root = window.document.documentElement;
     if (darkMode) {
@@ -88,6 +125,11 @@ const SignUp = () => {
   const handleLangChange = (e) => {
     setSelectedLang(e.target.value);
     localStorage.setItem("lang", e.target.value);
+  };
+
+  // Manual toggle uchun
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
   };
 
   const handleSignUp = async (e) => {
@@ -124,6 +166,16 @@ const SignUp = () => {
     }
   };
 
+  // Hozirgi soatni ko'rsatish (ixtiyoriy)
+  const getCurrentTimeMessage = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    if (hours >= 8 && hours < 20) {
+      return "☀️ Kun rejimi (8:00 - 20:00)";
+    }
+    return "🌙 Tungi rejim (20:00 - 8:00)";
+  };
+
   return (
     <div className={`min-h-screen w-full flex flex-col lg:flex-row font-sans transition-colors duration-500 ${darkMode ? "dark bg-black" : "bg-white"}`}>
       {/* Left Side - Form */}
@@ -142,6 +194,11 @@ const SignUp = () => {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
+            {/* Time indicator - optional */}
+            <span className={`text-xs hidden sm:block ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+              {getCurrentTimeMessage()}
+            </span>
+            
             <select
               value={selectedLang}
               onChange={handleLangChange}
@@ -151,8 +208,18 @@ const SignUp = () => {
               <option value="Rus">🇷🇺 Рус</option>
               <option value="Eng">🇬🇧 Eng</option>
             </select>
-            <button onClick={() => setDarkMode(!darkMode)} className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              {darkMode ? <Moon size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" /> : <Sun size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400" />}
+            
+            {/* Manual toggle button - user soatga qaramay o'zgartirishi mumkin */}
+            <button 
+              onClick={toggleDarkMode} 
+              className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title={darkMode ? "Light rejimga o'tish" : "Dark rejimga o'tish"}
+            >
+              {darkMode ? (
+                <Moon size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-yellow-400" />
+              ) : (
+                <Sun size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400" />
+              )}
             </button>
           </div>
         </div>
@@ -181,7 +248,7 @@ const SignUp = () => {
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder={t.namePlaceholder}
                   className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
-                    darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                    darkMode ? "bg-[#141414] border-gray-800 text-white placeholder-gray-500" : "border-gray-200"
                   }`}
                 />
               </div>
@@ -197,13 +264,13 @@ const SignUp = () => {
                   placeholder={t.phonePlaceholder}
                   maxLength={12}
                   className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
-                    darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                    darkMode ? "bg-[#141414] border-gray-800 text-white placeholder-gray-500" : "border-gray-200"
                   }`}
                 />
               </div>
 
-              {/* Password fields - grid on tablet and up */}
-              <div className=" gap-3 sm:gap-4">
+              {/* Password fields */}
+              <div className="space-y-3 sm:space-y-4">
                 <div className="space-y-1">
                   <label className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase ml-1">{t.passLabel}</label>
                   <input
@@ -213,7 +280,7 @@ const SignUp = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t.passPlaceholder}
                     className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
-                      darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                      darkMode ? "bg-[#141414] border-gray-800 text-white placeholder-gray-500" : "border-gray-200"
                     }`}
                   />
                 </div>
@@ -226,7 +293,7 @@ const SignUp = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder={t.confirmPassPlaceholder}
                     className={`w-full h-10 sm:h-11 md:h-12 rounded-lg border px-3 sm:px-4 outline-none focus:border-[#2100E0] transition-all text-sm sm:text-base ${
-                      darkMode ? "bg-[#141414] border-gray-800 text-white" : "border-gray-200"
+                      darkMode ? "bg-[#141414] border-gray-800 text-white placeholder-gray-500" : "border-gray-200"
                     }`}
                   />
                 </div>
@@ -262,7 +329,7 @@ const SignUp = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-11 sm:h-12 md:h-14 text-white font-bold rounded-lg shadow-lg cursor-pointer bg-[#2100E0] transition-all mt-2 active:scale-95 text-sm sm:text-base"
+                className="w-full h-11 sm:h-12 md:h-14 text-white font-bold rounded-lg shadow-lg cursor-pointer bg-[#2100E0] transition-all mt-2 active:scale-95 text-sm sm:text-base hover:bg-[#1a00b3]"
               >
                 {isLoading ? t.loading : t.submitBtn}
               </button>
