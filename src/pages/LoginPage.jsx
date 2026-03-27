@@ -98,6 +98,15 @@ const LoginPage = () => {
     const now = new Date();
     const hours = now.getHours();
     if (hours >= 8 && hours < 20) {
+      return "☀️ Kunduzgi";
+    }
+    return "🌙 Tungi";
+  };
+
+  const getTimeModeFullMessage = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    if (hours >= 8 && hours < 20) {
       return "☀️ Kunduzgi rejim (8:00 - 20:00)";
     }
     return "🌙 Tungi rejim (20:00 - 8:00)";
@@ -154,11 +163,18 @@ const LoginPage = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
-            {/* Time indicator */}
-            <span className={`text-[10px] sm:text-xs whitespace-nowrap ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              {getTimeModeMessage()}
-            </span>
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-6">
+            {/* Time indicator - mobil versiyada qisqa, desktopda to'liq */}
+            <div className="hidden sm:block">
+              <span className={`text-[10px] sm:text-xs whitespace-nowrap ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                {getTimeModeFullMessage()}
+              </span>
+            </div>
+            <div className="sm:hidden">
+              <span className={`text-[10px] whitespace-nowrap ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                {getTimeModeMessage()}
+              </span>
+            </div>
             
             <select
               value={selectedLang}
@@ -175,9 +191,9 @@ const LoginPage = () => {
               className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               {darkMode ? (
-                <Moon size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-yellow-400 cursor-pointer" />
+                <Moon size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-yellow-400 cursor-pointer" />
               ) : (
-                <Sun size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400 cursor-pointer" />
+                <Sun size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400 cursor-pointer" />
               )}
             </button>
           </div>

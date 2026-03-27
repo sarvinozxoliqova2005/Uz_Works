@@ -72,8 +72,6 @@ const SignUp = () => {
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) return savedTheme === "dark";
-    
-    // Avtomatik: soat 8:00 dan 20:00 gacha light, qolgan vaqt dark
     const now = new Date();
     const hours = now.getHours();
     return hours < 8 || hours >= 20;
@@ -87,7 +85,6 @@ const SignUp = () => {
     const checkTimeAndSetTheme = () => {
       const now = new Date();
       const hours = now.getHours();
-      // 8:00 dan 20:00 gacha Light mode, aks holda Dark mode
       const shouldBeDark = hours < 8 || hours >= 20;
       
       setDarkMode(shouldBeDark);
@@ -101,16 +98,11 @@ const SignUp = () => {
       }
     };
     
-    // Birinchi marta tekshirish
     checkTimeAndSetTheme();
-    
-    // Har 30 daqiqada tekshirish (agar sayt uzoq ochiq tursa)
     const interval = setInterval(checkTimeAndSetTheme, 30 * 60 * 1000);
-    
     return () => clearInterval(interval);
   }, []);
 
-  // Dark mode o'zgarganda (manual toggle) localStorage va classni yangilash
   useEffect(() => {
     const root = window.document.documentElement;
     if (darkMode) {
@@ -127,9 +119,26 @@ const SignUp = () => {
     localStorage.setItem("lang", e.target.value);
   };
 
-  // Manual toggle uchun
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+  };
+
+  const getTimeModeFullMessage = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    if (hours >= 8 && hours < 20) {
+      return "☀️ Kunduzgi rejim (8:00 - 20:00)";
+    }
+    return "🌙 Tungi rejim (20:00 - 8:00)";
+  };
+
+  const getTimeModeShortMessage = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    if (hours >= 8 && hours < 20) {
+      return "☀️ Kunduzgi";
+    }
+    return "🌙 Tungi";
   };
 
   const handleSignUp = async (e) => {
@@ -166,16 +175,6 @@ const SignUp = () => {
     }
   };
 
-  // Hozirgi soatni ko'rsatish (ixtiyoriy)
-  const getCurrentTimeMessage = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    if (hours >= 8 && hours < 20) {
-      return "☀️ Kun rejimi (8:00 - 20:00)";
-    }
-    return "🌙 Tungi rejim (20:00 - 8:00)";
-  };
-
   return (
     <div className={`min-h-screen w-full flex flex-col lg:flex-row font-sans transition-colors duration-500 ${darkMode ? "dark bg-black" : "bg-white"}`}>
       {/* Left Side - Form */}
@@ -193,11 +192,18 @@ const SignUp = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
-            {/* Time indicator - optional */}
-            <span className={`text-xs hidden sm:block ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-              {getCurrentTimeMessage()}
-            </span>
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-6">
+            {/* Time indicator - mobil: qisqa, tablet/desktop: to'liq */}
+            <div className="hidden sm:block">
+              <span className={`text-[10px] sm:text-xs whitespace-nowrap ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                {getTimeModeFullMessage()}
+              </span>
+            </div>
+            <div className="sm:hidden">
+              <span className={`text-[10px] whitespace-nowrap ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                {getTimeModeShortMessage()}
+              </span>
+            </div>
             
             <select
               value={selectedLang}
@@ -209,16 +215,15 @@ const SignUp = () => {
               <option value="Eng">🇬🇧 Eng</option>
             </select>
             
-            {/* Manual toggle button - user soatga qaramay o'zgartirishi mumkin */}
             <button 
               onClick={toggleDarkMode} 
               className="outline-none p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title={darkMode ? "Light rejimga o'tish" : "Dark rejimga o'tish"}
             >
               {darkMode ? (
-                <Moon size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-yellow-400" />
+                <Moon size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-yellow-400" />
               ) : (
-                <Sun size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400" />
+                <Sun size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-400" />
               )}
             </button>
           </div>
